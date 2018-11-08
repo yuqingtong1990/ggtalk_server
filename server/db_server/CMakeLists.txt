@@ -1,0 +1,8 @@
+cmake_minimum_required (VERSION 3.4)
+project(db_server)
+set(CMAKE_CXX_STANDARD 11)
+#set( CMAKE_BUILD_TYPE Debug )
+set( CMAKE_BUILD_TYPE Release)
+file(GLOB DBSRV_SRCS *.cpp */*.cpp *.h */*.h  *.cc */*.cc)
+link_libraries(base_static evpp_static jsoncpp hiredis mongocxx bsoncxx mariadbclient)
+add_executable(db_server ${DBSRV_SRCS} db_server.cc db_server.h )
