@@ -1,0 +1,162 @@
+syntax = "proto3";
+package IM.FriendsPackage;
+import "IMBaseDefine.proto";
+option optimize_for = LITE_RUNTIME;
+
+
+//没有好友分组的概念
+enum IMAddFriendStrategy
+{
+	ADDFRIEND_STRATEGY_NONE				   = 0;//默认值无意义
+	ADDFRIEND_STRATEGY_ALLOWANY            = 1;//同意任何用户加好友
+	ADDFRIEND_STRATEGY_DENYANY             = 2;//拒绝任何人加好友
+	IM_FRIEND_NEED_CONFIRM                 = 3;//需要验证
+}
+
+
+//****************************************添加好友**************************************************//
+enum IMAddFriendRet
+{
+	ADDFRIEND_SUCCESS    					= 0;//添加好友成功
+	ADDFRIEND_IN_SELF_BLACK_LIST			= 1;//被加好友在自己的黑名单中	
+	ADDFRIEND_IN_OTHER_SIDE_BLACK_LIST		= 2;//已被被添加好友设置为黑名单
+	ADDFRIEND_SELF_FRIEND_FULL				= 3;//自己好友数量已满	
+	ADDFRIEND_FRIEND_FRIEND_FULL			= 4;//对方好友数量已满
+	ADDFRIEND_ALREADY_FRIEND				= 5;//已经是好友	
+	ADDFRIEND_FRIEND_SIDE_FORBID_ADD		= 6;//被加好友设置为禁止加好友	
+	ADDFRIEND_STATUS_PENDING				= 7;//等待好友审核同意
+}
+
+message IMAddFriendReq
+{
+	uint32 userid = 1;
+}
+
+message IMAddFriendRsp
+{
+	IMAddFriendRet ret = 1;
+	string errormsg = 2;
+}
+
+//****************************************响应好友**************************************************//
+enum IMFriendResponseType
+{
+	FRIEND_RESPONSE_AGREE    				= 0; //同意请求
+	FRIEND_RESPONSE_REJECT   				= 1; //拒绝请求
+	FRIEND_RESPONSE_IGNORE  				= 2; //忽略请求
+}
+
+enum IMResponseFriendRet
+{
+	RESPONSE_FRIEND_SUCCESS                   		=0;//响应好友申请成功
+	RESPONSE_FRIEND_STATUS_NO_REQ               	=1;//对方没有申请过好友
+	RESPONSE_FRIEND_STATUS_SELF_FRIEND_FULL			=2;//自己的好友满
+	RESPONSE_FRIEND_STATUS_FRIEND_EXIST				=3;//好友已经存在
+	RESPONSE_FRIEND_STATUS_OTHER_SIDE_FRIEND_FULL   =4;//对方好友满
+}
+
+
+message IMResponseFriendReq
+{
+	uint32 userid = 1;
+}
+
+message IMResponseFriendRsp
+{
+	IMResponseFriendRet ret = 1;
+	string errormsg = 2;
+}
+
+//****************************************删除好友**************************************************//
+enum IMDelFriendRet
+{
+	DELFRIEND_SUCCESS    					= 0;//删除好友成功
+	DELFRIEND_NO_FRIEND	    				= 1;//删除好友时对方不是好友
+}
+
+message IMDelFriendReq
+{
+	uint32 userid = 1;
+}
+
+message IMDelFriendRsp
+{
+	IMDelFriendRet ret = 1;
+	string errormsg = 2;
+}
+
+//****************************************添加黑名单**************************************************//
+enum IMAddBlacklstRet
+{
+	ADD_BLACKLIST_FRIEND_SUCCESS				    = 0;//添加黑名单成功
+	ADD_BLACKLIST_FRIEND_IN_BLACK_LIST				= 1;//已经在黑名单了
+}
+
+message IMAddBlacklstReq
+{
+	uint32 userid = 1;
+}
+
+message IMAddBlacklstRsp
+{
+	IMAddBlacklstRet ret = 1;
+	string errormsg = 2;
+}
+
+//****************************************删除黑名单**************************************************//
+enum IMDelBlacklstRet
+{
+	DEL_BLACKLIST_FRIEND_SUCCESS				    = 0;//删除黑名单成功
+	DEL_BLACKLIST_FRIEND_IN_BLACK_LIST				= 1;//用户不在黑名单里
+}
+
+message IMDelBlacklstReq
+{
+	uint32 userid = 1;
+}
+
+message IMDelBlacklstRsp
+{
+	IMDelBlacklstRet ret = 1;
+	string errormsg = 2;
+}
+
+
+//****************************************根据用户id查询用户信息**************************************************//
+message IMQueryUserReq{
+	uint32 userid = 1;
+}
+
+message IMQueryUserRsp{
+	bool success = 1;
+	string errormsg = 2;
+	IM.BaseDefine.UserDetailInfo info = 3;
+}
+
+
+//****************************************获取好友列表**************************************************//
+message IMQueryFriendLstReq{
+	uint32 userid = 1; 
+} 
+
+message IMQueryFriendLstRsp{
+	bool success = 1;
+	string errormsg = 2;
+	repeated IM.BaseDefine.UserBasicInfo friends = 3;
+} 
+
+
+//****************************************好友添加服务端通知**************************************************//
+
+enum IMFriendAddRspNotifyRet
+{
+	DEL_FRIEND_ADDRSP_NOTIFY_SUCCESS				    = 0;//添加好友成功
+	DEL_FRIEND_ADDRSP_NOTIFY_REJECT						= 1;//添加好友被拒绝
+}
+
+message IMFriendAddRspNotify
+{
+	IMFriendAddRspNotifyRet ret  = 1;
+	uint32 userid = 2; 
+}
+

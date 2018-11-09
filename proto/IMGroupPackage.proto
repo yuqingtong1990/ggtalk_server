@@ -1,0 +1,261 @@
+syntax = "proto3";
+package IM.GroupPackage;
+import "IMBaseDefine.proto";
+option optimize_for = LITE_RUNTIME;
+
+/*
+enum GroupCommendID
+{
+	cmd_group_null = 0;
+	//获取加入的群列表
+	cmd_group_getjoingrouplst_req = 1;
+	cmd_group_getjoingrouplst_rsp = 2;
+	//获取群详细信息
+	cmd_group_getdetailinfo_req = 3;
+	cmd_group_getdetailinfo_rsp = 4;
+	//创建群组
+	cmd_group_creategroup_req = 5;
+	cmd_group_creategroup_rsp = 6;
+	//解散群组
+	cmd_group_dissolvegroup_req = 7;
+	cmd_group_dissolvegroup_rsp = 8;
+	//删除群成员
+	cmd_group_deletemember_req = 9;
+	cmd_group_deletemember_rsp = 10;
+	//邀请群成员
+	cmd_group_invitemember_req = 11;
+	cmd_group_invitemember_rsp = 12;
+	//申请加入群组
+	cmd_group_applyjoin_req = 13;
+	cmd_group_applyjoin_rsp = 14;
+	//退出群组
+	cmd_group_applyjoin_req = 15;
+	cmd_group_applyjoin_rsp = 16;
+	//修改群组信息
+	cmd_group_motifyinfo_req = 17;
+	cmd_group_motifyinfo_rsp = 18;
+
+}
+*/
+enum GroupType
+{
+	nullGroup 	= 0;	//初始值无意义
+	Private		= 1;	//私有群(群组资料不公开，只能通过邀请的方式加入，类似于微信群)
+	Public		= 2;	//公有群(具有较为严格的管理机制、准入机制，类似于 QQ 群,可以被搜索到)
+	ChatRoom    = 3;	//聊天室(群成员可以随意进出，组织较为松散)
+};
+
+enum GroupJoinOption
+{
+	nochange			= 0; //默认
+	forbid_join 		= 1; //禁止加入(私有群默认是这种)
+	examine_join 		= 2; //需要审批(公有群默认是这种可以修改)
+	free_join			= 3; //随意加入(聊天室默认是这种可以修改)
+}
+
+message GroupSingleInfo
+{
+	 uint32 group_id 			= 1;		//群id
+	 uint32 version 			= 2;		//群的版本
+	 string group_name 			= 3;		//群名称
+	 string group_avatar 		= 4;		//群头像链接
+	 uint32 group_creator_id 	= 5;		//创建者id
+	 GroupType group_type 		= 6;		//群类型
+	 uint32 group_member_number = 8;		//群成员人数
+	 
+};
+
+enum GroupMemberIdentity
+{
+	normal_member 	= 0; //普通成员
+	creater 		= 1; //创建者
+	controllor		= 2; //管理员
+}
+
+//申请加群选项：0禁止加入；1需要审批；2随意加入；
+message GroupMember
+{
+	IM.BaseDefine.UserBasicInfo userInfo = 1;
+	GroupMemberIdentity identity 		 = 2;
+	string group_name 					 = 3;
+}
+
+message GroupDetailInfo
+{
+	 GroupSingleInfo sinfo 			= 1;
+	 sint64  tm_create  			= 2; //群组创建时间
+	 string group_notice		    = 3; //群公告 
+	 string group_introduce			= 4; //群介绍
+	 GroupJoinOption joinopt        = 5; //加入选项	
+	 uint32 group_membernum_max     = 7; //群成员最大的人数	
+	 repeated GroupMember members	= 8; //群成员列表
+};
+
+
+message UsrGroupLstItem
+{
+	GroupSingleInfo info 		= 1;
+	uint32 shield_status 		= 2;		//1: shield  0: not shield(屏蔽状态)
+}
+
+//获取加入的群列表
+message IMQueryUserJoinGroupReq{
+	uint32 userid = 1; 
+} 
+
+message IMQueryUserJoinGroupRsp{
+	bool success = 1;
+	string errormsg = 2;
+	repeated UsrGroupLstItem groups = 3;
+} 
+
+
+//获取群详细信息
+message IMGetDetailInfoReq{
+	uint32 group_id = 1; 
+} 
+
+message  IMGetDetailInfoRsp{
+	bool success = 1;
+	string errormsg = 2;
+	repeated GroupDetailInfo groups = 3;
+}
+
+//创建群组
+message IMCreateGroupReq
+{
+	uint32 group_name = 1; 
+	repeated uint32 members = 2;
+} 
+
+message IMCreateGroupRsp{
+	bool success = 1;
+	string errormsg = 2;
+	uint32 group_id = 3;
+}
+
+
+//解散群组
+message IMDissolveGroupReq
+{
+	uint32 group_id = 1; 
+	repeated uint32 members = 2;
+} 
+
+message IMDissolveGroupRsp{
+	bool success = 1;
+	string errormsg = 2;
+}
+
+
+//删除群成员
+message IMDeleteMemberGroupReq
+{
+	uint32 group_id = 1; 
+	repeated uint32 members = 2; //要删除的群成员列表
+} 
+
+message IMDeleteMemberGroupRsp{
+	bool success = 1;
+	string errormsg = 2;
+	repeated uint32 del_members = 3;
+}
+
+//邀请群成员
+message IMInviteMemberGroupReq
+{
+	uint32 group_id = 1; 
+	repeated uint32 members = 2; //要删除的群成员列表
+} 
+
+message IMInviteMemberGroupRsp{
+	bool success = 1;
+	string errormsg = 2;
+	repeated uint32 join_members = 3; //已经加入成员id(讨论组和微信群直接加入，这里会返回信息吗，qq群需要对方同意)
+}
+
+//响应邀请入群
+enum IMHandleinviteType
+{
+	HANDLE_INVITE_AGREE    				= 0; //同意请求
+	HANDLE_INVITE_REJECT   				= 1; //拒绝请求
+	HANDLE_INVITE_IGNORE  				= 2; //忽略请求
+}
+
+message IMHandleinviteGroupReq
+{
+	uint32 invite_id = 1; 				//邀请id
+	IMHandleinviteType handle = 2;
+} 
+
+message IMHandleinviteGroupRsp
+{
+	bool success = 1;
+	string errormsg = 2;
+} 
+
+//申请加入群组
+message IMApplyJoinGroupReq
+{
+	uint32 group_id = 1; 
+	uint32 userid = 2; 
+} 
+
+message IMApplyJoinGroupRsp{
+	bool success = 1;
+	string errormsg = 2;
+}
+
+//退出群组
+message IMQuitGroupReq
+{
+	uint32 quit_group_id = 1; 
+	uint32 quit_userid = 2; 
+} 
+
+message IMQuitGroupRsp{
+	bool success = 1;
+	string errormsg = 2;
+}
+
+//修改群组信息(要修改什么设置什么,传空代表不修改)
+message IMMotifyGroupInfoReq
+{
+	 string group_name		    	= 1; //群名称 
+	 string group_avatar		    = 2; //群头像链接 
+	 string group_notice		    = 3; //群公告 
+	 string group_introduce			= 4; //群介绍
+	 GroupJoinOption joinopt        = 5; //加入选项	
+} 
+
+message IMMotifyGroupInfoRsp{
+	bool success = 1;
+	string errormsg = 2;
+}
+
+//有成员加入通知
+message IMGroupMemberjoinNotify
+{
+	uint32 group_id = 1;
+	uint32 userid = 2;
+}
+
+//有成员退出通知
+message IMGroupMemberQuitNotify{
+	uint32 group_id = 1;
+	uint32 userid = 2;
+}
+
+//群解散通知
+message IMGroupDissolveNotify{
+	uint32 group_id = 1;
+}
+
+//群信息修改通知(修改了什么就传什么，没修改的就是空的)
+message IMGroupInfoMotifyNotify{
+	uint32 group_id 			= 1;
+	string group_name		    = 2; //群名称 
+	string group_avatar		    = 3; //群头像链接 
+	string group_notice		    = 4; //群公告 
+	string group_introduce		= 5; //群介绍
+}

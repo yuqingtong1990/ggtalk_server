@@ -1,0 +1,135 @@
+syntax = "proto3";
+package IM.CmdIdDefine;
+option optimize_for = LITE_RUNTIME;
+
+enum ServiceID{
+	SID_NULL			= 0;
+    SID_CONN           	= 1;           // 用户相关服务 比如登录 注册 注销
+    SID_QUERY      		= 2;		    // 查询相关服务 比如查询用户信息 群信息
+    SID_MSG             = 3;           // 消息服务
+    SID_FRIEND			= 4;			//关系链 加好友
+    SID_GROUP           = 5;           // 群组服务 包括建群 加群 等群主服务
+    SID_INTERNAL  		= 14;			// 内部命令
+    SID_OTHER           = 15;			// 其他服务
+}
+
+enum UserCommendID
+{
+	cmd_user_null = 0;
+	//登录
+	cmd_login_req =  1;	
+	cmd_login_rsp =  2;
+	//注册
+	cmd_register_req =  3;
+	cmd_register_rsp =  4;	
+	//注销
+	cmd_logout_req =  5;
+	cmd_logout_rsp =  6;
+	//修改用户信息
+	cmd_changeusrinfo_req =  7;
+	cmd_changeusrinfo_rsp =  8;
+	//被强制下线
+	cmd_onfourceoffline = 9; //强制下线是服务端下发给客户端的
+	//心跳
+	cmd_heartbeat_req = 10; //心跳请求
+	cmd_heartbeat_rsp = 11; //心跳回复
+	//获取公钥
+	cmd_getpublickey_req = 12;
+	cmd_getpublickey_rsp = 13;
+}
+
+enum FriendCommendID
+{
+	cmd_Friend_null = 0;
+	//获取好友列表
+	cmd_query_friendlst_req = 1;
+	cmd_query_friendlst_rsp = 2;
+	//用户添加好友
+	cmd_useraddfriend_req = 3;
+	cmd_useraddfriend_rsp = 4;
+	//用户删除好友
+	cmd_userdelfriend_req = 5;
+	cmd_userdelfriend_rsp = 6;
+	//用户相应好友请求
+	cmd_respondfriendreq_req = 7;
+	cmd_respondfriendreq_rsp = 8;
+	//添加黑名单
+	cmd_addblacklst_req = 9;
+	cmd_addblacklst_rsp = 10;
+	//添加黑名单
+	cmd_removeblacklst_req = 11;
+	cmd_removeblacklst_rsp = 12;
+	//好友请求被接受
+	cmd_friendreqsucess = 15; //服务端下发通知
+}
+
+
+enum GroupCommendID
+{
+	cmd_group_null = 0;
+	//获取加入的群列表
+	cmd_group_getjoingrouplst_req = 1;
+	cmd_group_getjoingrouplst_rsp = 2;
+	//获取群详细信息
+	cmd_group_getdetailinfo_req = 3;
+	cmd_group_getdetailinfo_rsp = 4;
+	//创建群组
+	cmd_group_creategroup_req = 5;
+	cmd_group_creategroup_rsp = 6;
+	//解散群组
+	cmd_group_dissolvegroup_req = 7;
+	cmd_group_dissolvegroup_rsp = 8;
+	//删除群成员
+	cmd_group_deletemember_req = 9;
+	cmd_group_deletemember_rsp = 10;
+	//邀请群成员
+	cmd_group_invitemember_req = 11;
+	cmd_group_invitemember_rsp = 12;
+	//响应邀请入群
+	cmd_group_handleinvite_req = 13;
+	cmd_group_handleinvite_rsp = 14;
+	//申请加入群组
+	cmd_group_applyjoin_req = 15;
+	cmd_group_applyjoin_rsp = 16;
+	//退出群组
+	cmd_group_quit_req = 17;
+	cmd_group_quit_rsp = 18;
+	//修改群的屏蔽选项
+	cmd_group_motifyjoinopt_req = 19;
+	cmd_group_motifyjoinopt_rsp = 20;
+	//处理加群申请
+	cmd_group_handlejoin_req = 21;
+	cmd_group_handlejoin_rsp = 22;
+
+	//修改群信息
+	cmd_group_motifyinfo_req = 23;
+	cmd_group_motifyinfo_rsp = 24;
+
+	//群成员禁言(暂时不实现)
+	cmd_group_shutup_req = 31;
+	cmd_group_shutup_rsp = 32;
+
+	//服务端推送通知消息(群系统消息)
+	cmd_group_invitedjoin_notify = 39; //被邀请入群的通知
+	cmd_group_memberjoin_notify = 40;  //有成员加入通知
+	cmd_group_memberquit_notify = 41;  //有成员退出通知
+	cmd_group_infomotify_notify = 42;  //群信息修改通知
+	cmd_group_dissolve_notify   = 43;  //群解散通知
+	cmd_group_shutup_notify     = 44;  //用户禁言通知(暂时不实现)
+}
+
+enum MessageCommendID
+{
+	cmd_message_null = 0;
+	//发送消息
+	cmd_message_sendmsg_req = 1;
+	cmd_message_sendmsg_rsp = 2;
+	//请求消息(离线消息)
+	cmd_message_getmessage_req = 3;
+	cmd_messgae_getmessage_rsp = 4;
+	//有新消息来了通知
+	cmd_message_newmessgae_notify = 5;
+	//服务端转发消息
+	cmd_message_srvmessgae_push = 6;
+	
+}

@@ -1,0 +1,83 @@
+syntax = "proto3";
+package IM.CommPackage;
+import "IMBaseDefine.proto";
+option optimize_for = LITE_RUNTIME;
+
+//登录
+message IMUsrLoginReq
+{
+	IM.BaseDefine.LoginInfo info = 1;
+	string client_aeskey = 2;//使用服务公钥加密
+}
+
+message IMUsrLoginRsp
+{
+	bool success = 1;
+	string errormsg = 2;
+	IM.BaseDefine.UserDetailInfo userInfo = 3;
+}
+
+//注册
+message IMUsrRegisterInfoReq
+{
+	IM.BaseDefine.RegisterInfo info = 1;
+}
+
+message IMUsrRegisterInfoRsp
+{
+	bool success = 1;
+	string errormsg = 2;
+}
+
+//注销
+message IMUsrLogoutReq
+{
+	uint32 userid = 1;
+}
+
+message IMUsrLogoutRsp
+{
+	bool success = 1;
+	string errormsg = 2;
+}
+
+//修改用户信息(该功能未实现)
+message IMchangeusrinfoReq
+{
+	uint32 userid = 1;
+}
+
+message IMChangeusrinfoRsp
+{
+	bool success = 1;
+	string errormsg = 2;
+}
+
+//服务端强制下线
+message IMOnFourceoffline
+{
+	bool success = 1;
+	string errormsg = 2;
+}
+
+//心跳
+message IMHeartbeatReq
+{
+	uint32 userid = 1;
+}
+
+message IMHeartbeatRsp
+{
+	sint64 timestamp = 1;
+}
+
+//获取公钥
+message IMGetPublickeyReq
+{
+	sint64 timestamp = 1;//客户端时间戳
+}
+
+message IMGetPublickeyRsp
+{
+	string srv_publickey = 1;
+}

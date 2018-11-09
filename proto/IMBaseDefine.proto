@@ -1,0 +1,130 @@
+syntax = "proto3";
+package IM.BaseDefine;
+option optimize_for = LITE_RUNTIME;
+
+//消息来源
+enum clientType
+{
+	unknowtype 	= 0;		//未知
+	server 		= 1;		//服务器
+	pc 			= 2;		//pc客户端
+	mac 		= 3;		//mac客户端
+	android 	= 4;		//Android客户端
+	iphone 		= 5;		//iphone客户端
+	ipad 		= 6;		//ipad客户端
+	web			= 7;		//web端(实际来自restapi)
+};
+
+
+//登录信息
+message LoginInfo
+{
+	 string loginname = 1;  //登录的用户名
+	 string password =  2;  //登录的密码
+	 sint64 tlogin  = 3;	//登录的时间(此为聊天服务器的时间而不是客户端时间)
+	 string clientguid = 5; //设备的guid(这个又各端自己生成)
+	 int32  clinettype = 6; //登录的客户端类型 默认为0为未知设备 1为pc端 2为Android 3为iphone 4为Mac
+	 string clientOs = 7;   //pc为windows版本 Android为Android版本 IOS为IOS版本
+	 string clientDev = 8;  //设备名称(比如小米MIX2 这类的名称)
+};
+
+message RegisterInfo
+{
+	 string cellphone = 1;  //用户注册的手机号
+	 string email =  2;  	//用户邮箱
+	 string username = 3;	//用户名
+	 string password = 4;	//用户的密码
+	 sint64 tRegister  = 5; //用户注册的时间(此为聊天服务器的时间而不是客户端时间)
+};
+
+enum IMMsgType
+{
+	unknowMsg 	= 0;
+	text 		= 1; 	//文本消息
+	pic 		= 2; 	//图片消息
+	audio 		= 3; 	//语音消息
+	file 		= 4; 	//文件消息
+	video   	= 5; 	//视频消息
+	notify		= 8;	//通知类消息(系统专用)
+	custom 		= 9;    //自定义消息
+};
+
+//会话类型
+enum SessionType
+{
+	defaultChat = 0;			//初始值无意义
+	SingleChat  = 1;          	//单聊会话
+	GroupChat   = 2;          	//群聊会话
+	SystemChat  = 3;			//系统会话
+};
+
+
+message IMMsgData
+{
+	uint32 sender_id 	 = 1;	  //消息的发送者id 如果不是系统消息为0
+	uint32 toId          = 2;	  //消息的groupid 如果不是群聊消息为0
+	sint64 create_time 	 = 3;	  //消息的创建的时间
+	uint64 uuid 		 = 4;     //消息的uuid(客户端可以不设定,到服务端转发时会指定一个id，可以通过这个id)
+	SessionType sestype  = 5;	  //消息session类型
+	IMMsgType	msgtype  = 6;	  //消息的类型
+	int32 priority       = 7;     //消息的优先级
+	uint32 version        = 8;	  //消息的版本号
+	bytes content		 = 14;    //消息的内容
+	bytes attach_data	 = 15;	  //用户自定义字符串
+};
+
+message UserBasicInfo{
+	uint32 user_id = 1;				// 用户id
+	string user_name = 2;			// 用户名(用户自定义)
+	uint32 user_gender = 3; 		// 用户性别,男：1 女：2  未知:0
+	string user_nick_name = 4;		// 昵称
+	string user_avatar_url = 5;		// 头像url
+	string user_email = 6;			// 邮箱地址
+	string user_cellphone = 7;		// 用户手机
+    string sign_info = 8;			// 个性签名
+};
+
+
+message UserDetailInfo{
+	uint32 user_id = 1;				// 用户id
+	string user_name = 2;			// 用户名(用户自定义)
+	uint32 user_gender = 3; 		// 用户性别,男：1 女：2  未知:0
+	string user_nick_name = 4;		// 昵称
+	string user_avatar_url = 5;		// 头像url
+	string user_email = 6;			// 邮箱地址
+	string user_cellphone = 7;		// 用户手机
+    string sign_info = 8;			// 个性签名
+	//UserBasicInfo userbaseinfo = 1;	//用户基本信息
+	string birthday = 9; 			//生日
+	string school = 10;				//学校
+	string hometown = 11; 			//家乡
+	string career = 12; 				//职业
+	string describe = 13;			//描述
+};
+
+message ServerIpAddr{
+	string ip = 1;
+	uint32 port = 2;
+};
+
+//最近联系人的列表
+message ContactSessionInfo{
+	uint32 session_id = 1;//如果是群则是群id 用户则为用户id
+	SessionType session_type = 2;
+	uint32 updated_time = 4;
+	uint64 latest_msg_id = 5;
+	bytes latest_msg_data = 6;
+    IMMsgType latest_msg_type = 7;
+    uint32 latest_msg_from_user_id = 8;
+};
+
+//未读消息信息
+message UnreadInfo{
+	uint32 session_id = 1; //如果是群则是群id 用户则为用户id
+	SessionType session_type = 2;
+	uint32 unread_cnt = 3; //未读消息的数量
+	uint32 latest_msg_id = 4;
+	bytes latest_msg_data = 5;
+    IMMsgType latest_msg_type = 6;
+    uint32 latest_msg_from_user_id = 7;        //发送得用户id
+}

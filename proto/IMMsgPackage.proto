@@ -1,0 +1,44 @@
+syntax = "proto3";
+package IM.MessagePackage;
+import "IMBaseDefine.proto";
+option optimize_for = LITE_RUNTIME;
+
+//客户端发送消息
+message IMSendMessageReq
+{
+	IM.BaseDefine.IMMsgData msgdata = 1;
+}
+
+message IMSendMessageRsp
+{
+	bool success   = 1;
+	string errmsg  = 2;
+	uint64 uuid    = 3;
+}
+
+//服务端通知有新的消息
+message IMHaveNewMessage
+{
+	uint32 unreadcut = 1; //未读消息计数
+	sint64 srvtm    = 2;  //当前服务端时间搓 
+}
+
+//服务端通知
+message IMSrvPushMessage
+{
+	IM.BaseDefine.IMMsgData msgdata = 1;
+}
+
+
+//主动去服务器去拉取消息
+message IMMsgGetMessageReq
+{
+	sint64 srvtm    = 1;  //当前服务端时间搓 
+}
+
+message IMMsgGetMessageRsp
+{
+	bool HaveMsg = 1;
+	repeated IM.BaseDefine.IMMsgData msgdatas = 2;
+}
+
