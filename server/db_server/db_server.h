@@ -30,6 +30,8 @@ public:
     void Loop();
     void OnClose(const evpp::TCPConnPtr& conn);
 private:
+    std::mutex mutex_conn_;
+    std::map<uint64_t,evpp::TCPConnPtr> mapIdConn_;
     std::shared_ptr<evpp::TCPServer> tcpserver_;
     evpp::EventLoop* loop_ = nullptr;
     std::atomic_bool isRun_ = false;
