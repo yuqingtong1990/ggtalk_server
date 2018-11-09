@@ -8,6 +8,7 @@ set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -march=native -O3 -pthread" 
 include_directories(${PROJECT_SOURCE_DIR}/)
 include_directories(${PROJECT_SOURCE_DIR}/base)
 include_directories(${PROJECT_SOURCE_DIR}/mysql)
+include_directories(${PROJECT_SOURCE_DIR}/server)
 
 link_directories(${PROJECT_BINARY_DIR}/libs /usr/local/lib /usr/lib)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/libs)
