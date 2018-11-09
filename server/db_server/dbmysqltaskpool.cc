@@ -1,7 +1,7 @@
 //
 // Created by yqt on 18-11-9.
 //
-
+#include "DbSrvConfigMgr.h"
 #include "dbmysqltaskpool.h"
 
 void ITaskDB::SetId(uint64_t id) {
@@ -35,7 +35,7 @@ TaskDBThdPool::TaskDBThdPool()
     for (int i = 0; i != thread_num; ++i)
     {
         TaskDBThd* pthread = new TaskDBThd(this);
-        pthread->Initialize(DBCfg::get().host(), DBCfg::get().user(), DBCfg::get().password(), DBCfg::get().dbname());
+        pthread->Initialize(mysqlDbConfig::getSingleton().host(), mysqlDbConfig::getSingleton().user(), mysqlDbConfig::getSingleton().password(), mysqlDbConfig::getSingleton().dbname());
         idel_threads_.push(pthread);
     }
 }
