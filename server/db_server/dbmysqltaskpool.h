@@ -71,7 +71,7 @@ private:
     std::mutex                  thread_mutex_;  // 线程队列锁
     std::condition_variable     cond_;          // 条件阻塞
     std::thread                 thread_;        // 调度线程
-    std::atomic<bool>           stop_ = false;  // 是否关闭提交
+    std::atomic<bool>           stop_;  // 是否关闭提交
     std::queue<std::shared_ptr<ITaskDB>>  taskdeque_;
     std::stack<TaskDBThd*>     idel_threads_;   // 空闲线程队列
     typedef std::chrono::duration<int> seconds_type;

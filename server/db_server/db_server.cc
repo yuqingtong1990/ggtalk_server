@@ -6,7 +6,7 @@
 using namespace evpp;
 
 DBServer::DBServer() {
-
+    isRun_.store(false);
 }
 
 DBServer::~DBServer() {

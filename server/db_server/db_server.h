@@ -34,7 +34,7 @@ private:
     std::map<uint64_t,evpp::TCPConnPtr> mapIdConn_;
     std::shared_ptr<evpp::TCPServer> tcpserver_;
     evpp::EventLoop* loop_ = nullptr;
-    std::atomic_bool isRun_ = false;
+    std::atomic_bool isRun_;
 };
 
 

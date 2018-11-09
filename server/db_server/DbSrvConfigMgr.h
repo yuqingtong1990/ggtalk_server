@@ -12,8 +12,8 @@ class mysqlDbConfig
     :public Singleton<mysqlDbConfig>
 {
 public:
-    mysqlDbConfig();
-    ~mysqlDbConfig();
+    mysqlDbConfig() = default;
+    ~mysqlDbConfig() = default;
 
     void Set(const std::string& host, const std::string& user, const std::string& password, const std::string& dbname);
 	bool LoadCfgFromFile();
