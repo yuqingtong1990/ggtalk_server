@@ -10,7 +10,8 @@ class Singleton
 {
 public:
     Singleton(){}
-    ~Singleton(){}
+
+    virtual ~Singleton(){}
 
     inline static type & getSingleton()
     {

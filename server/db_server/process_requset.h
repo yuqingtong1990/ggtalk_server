@@ -8,11 +8,15 @@
 #include <cstdint>
 #include <string>
 #include "ImPdu.h"
+#include "base/Singleton.h"
 /*
  * 处理请求一般是消息服务器传递过来的
 */
 
-class process_requset {
+class process_requset
+    :public Singleton<process_requset>
+
+{
 public:
     process_requset() = default;
     ~process_requset() = default;

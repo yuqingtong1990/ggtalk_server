@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 3.4)
 project(db_server)
 set(CMAKE_CXX_STANDARD 11)
+include_directories(../ business/)
 #set( CMAKE_BUILD_TYPE Debug )
 set( CMAKE_BUILD_TYPE Release)
 file(GLOB DBSRV_SRCS *.cpp */*.cpp *.h */*.h  *.cc */*.cc ../proto/*.cc  ../proto/*.h business/*.cc  business/*.h)
