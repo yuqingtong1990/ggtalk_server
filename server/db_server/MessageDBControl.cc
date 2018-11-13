@@ -124,6 +124,10 @@ void MessageDBControl::GetUserOffLineMsg_callback(const ResultMap &ret) {
 void MessageDBControl::SetMsgHaveRead_callback(const ResultMap &ret) {
      for (auto&& iter = ret.begin(); iter != ret.end(); ++iter) {
          LOG_INFO << "operId:" << iter->second->id << "code " << iter->second->code << "count" << iter->second->count;
+          if (iter->second->id == MongoDataOper::op_deleteMany){
+            //修改代码
+
+         }
      }
 }
 
