@@ -47,7 +47,8 @@ struct MongoDbOpt{
 
 typedef std::shared_ptr<MongoDbOpt> MongoDbOptPtr;
 
-class MongoWrapper {
+class MongoWrapper
+{
      public:
         using BSONValueList = std::vector<bsoncxx::document::value>;
         using autoCursor = std::shared_ptr<mongocxx::v_noabi::cursor>;
@@ -57,8 +58,8 @@ class MongoWrapper {
 
         static bool initMongodb();
         static void shutdown();
+        MongoCode initConnection(const std::string &host_name, const std::string &db_name);
         MongoCode initConnection(const std::string &host_name, ReadMode read_mode, const std::string& replset, const std::string &db_name, const std::string &username, const std::string &password);
-        MongoCode resetConnect();
 
         MongoCode count(std::int64_t &result, const std::string &ns, const std::string &query);
         MongoCode selectOne(bsoncxx::v_noabi::stdx::optional<bsoncxx::document::value> &result, const std::string &ns, const std::string &query, const std::string &filter);

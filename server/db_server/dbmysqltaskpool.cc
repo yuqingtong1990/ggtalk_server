@@ -36,7 +36,7 @@ TaskDBThdPool::TaskDBThdPool()
     for (int i = 0; i != thread_num; ++i)
     {
         TaskDBThd* pthread = new TaskDBThd(this);
-        pthread->Initialize(mysqlDbConfig::getSingleton().host(), mysqlDbConfig::getSingleton().user(), mysqlDbConfig::getSingleton().password(), mysqlDbConfig::getSingleton().dbname());
+        pthread->Initialize(mysqlDbConfig::getSingletonPtr()->host(), mysqlDbConfig::getSingletonPtr()->user(), mysqlDbConfig::getSingletonPtr()->password(), mysqlDbConfig::getSingletonPtr()->dbname());
         idel_threads_.push(pthread);
     }
 }

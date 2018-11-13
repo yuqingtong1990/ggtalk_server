@@ -14,23 +14,19 @@ class FastQueue
 public:
     typedef std::deque<T>   Cont;
 
-    FastQueue() : _flag(0)
-    {
-    }
-    ~FastQueue()
-    {}
+    FastQueue() = default;
+    ~FastQueue() = default;
 
     /*
     * push
     */
     inline void push(const T& elem)
     {
-        _mutex.lock();
+        std::unique_lock<std::mutex> ulk(mutex_);
         if (_flag == 0)
             _containerB.push_back(elem);
         else
             _containerA.push_back(elem);
-        _mutex.unlock();
     }
 
     /*
@@ -48,17 +44,14 @@ public:
             }
             else
             {
-                _mutex.lock();
+                std::unique_lock<std::mutex> ulk(mutex_);
                 if (!_containerB.empty())
                 {
                     _flag = 1;
-                    _mutex.unlock();
-
                     elem = _containerB.front();
                     _containerB.pop_front();
                     return true;
                 }
-                _mutex.unlock();
             }
         }
         else
@@ -71,17 +64,14 @@ public:
             }
             else
             {
-                _mutex.lock();
+                std::unique_lock<std::mutex> ulk(mutex_);
                 if (!_containerA.empty())
                 {
                     _flag = 0;
-                    _mutex.unlock();
-
                     elem = _containerA.front();
                     _containerA.pop_front();
                     return true;
                 }
-                _mutex.unlock();
             }
         }
 
@@ -93,10 +83,9 @@ public:
     */
     inline unsigned getSize()
     {
-        _mutex.lock();
+        std::unique_lock<std::mutex> ulk(mutex_);
         unsigned int size = 0;
         size = _containerA.size() + _containerB.size();
-        _mutex.unlock();
         return size;
     }
 
@@ -105,10 +94,9 @@ public:
     */
     inline void reserved()
     {
-        _mutex.lock();
+         std::unique_lock<std::mutex> ulk(mutex_);
         _containerA.shrink_to_fit();
         _containerB.shrink_to_fit();
-        _mutex.unlock();
     }
 
     /*
@@ -127,13 +115,12 @@ public:
     */
     inline unsigned getSizeW()
     {
-        _mutex.lock();
+        std::unique_lock<std::mutex> ulk(mutex_);
         unsigned int size = 0;
         if (_flag == 0)
             size = _containerB.size();
         else
             size = _containerA.size();
-        _mutex.unlock();
         return size;
     }
 
@@ -145,8 +132,8 @@ public:
 private:
     Cont _containerA;
     Cont _containerB;
-    int _flag;         //读线程切换队列状态
-    std::mutex _mutex;
+    int _flag = 0;         //读线程切换队列状态
+    std::mutex mutex_;
 };
 
 

@@ -1,5 +1,6 @@
 //
 // Created by yqt on 18-11-8.
+// base by https://github.com/hlxxiang/mongopp
 //
 
 #ifndef ALL_MONGOAYSNOPER_H
@@ -107,7 +108,6 @@ private:
     int onHandleDeleteOne(MongoWrapperPtr conn, MongoDataOperPtr dataPtr);
     int onHandleDeleteMany(MongoWrapperPtr conn, MongoDataOperPtr dataPtr);
     int onHandleDrop(MongoWrapperPtr conn, MongoDataOperPtr dataPtr);
-
 private:
     MongoOperID _operId;
     MongoDataOperArray _operArray;

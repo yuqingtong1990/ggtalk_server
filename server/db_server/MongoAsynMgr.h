@@ -1,5 +1,6 @@
 //
 // Created by yqt on 18-11-8.
+// base by https://github.com/hlxxiang/mongopp
 //
 
 #ifndef ALL_MONGOASYNMGR_H
@@ -14,7 +15,7 @@
 using MongOperQueue = FastQueue<std::pair<std::string, MongoAsynOperPtr>>;
 
 class MongoAsynMgr
-: public Singleton<MongoAsynMgr>
+    :public Singleton<MongoAsynMgr>
 {
     public:
         using MongoWrapperMap = std::unordered_map<std::string, MongoWrapperPtr>;

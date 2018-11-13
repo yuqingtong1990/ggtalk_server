@@ -1,5 +1,5 @@
 #include "MongoWrapper.h"
-
+#include <iostream>
 #include <mongocxx/exception/exception.hpp>
 #include <bsoncxx/exception/exception.hpp>
 
@@ -24,7 +24,41 @@ bool MongoWrapper::initMongodb() {
 }
 
 void MongoWrapper::shutdown() {
+    if (_instance){
+        delete _instance;
+        _instance = nullptr;
+    }
+}
 
+MongoCode MongoWrapper::initConnection(const std::string &host_name, const std::string &db_name) {
+
+    MongoCode e_code = E_SUCCESS;
+
+     try {
+        if (_conn)
+        {
+            delete _conn;
+            _conn = nullptr;
+        }
+
+         _url = host_name;
+        _read_mode = k_primary;
+        _dbName = db_name;
+        _username = "";
+        _password = "";
+        _replset = "";
+
+         mongocxx::uri uri("mongodb://"+host_name);
+         _conn = new mongocxx::client(uri);
+          _db = (*_conn)[db_name.c_str()];
+
+    }catch (mongocxx::v_noabi::exception& ex){
+        delete _conn;
+        _conn = nullptr;
+        e_code = E_CONNECTION_FAILS;
+    }
+
+    return e_code;
 }
 
 MongoCode MongoWrapper::initConnection(const std::string &host_name, ReadMode read_mode, const std::string &replset,
@@ -85,11 +119,6 @@ MongoCode MongoWrapper::initConnection(const std::string &host_name, ReadMode re
     return e_code;
 }
 
-MongoCode MongoWrapper::resetConnect() {
-    if (!_conn)
-            return initConnection(_url, _read_mode, _replset, _dbName, _username, _password);
-        return E_SUCCESS;
-}
 
 MongoCode MongoWrapper::count(std::int64_t &result, const std::string &ns, const std::string &query) {
     MongoCode error = ping();
@@ -177,7 +206,7 @@ MongoCode MongoWrapper::selectMany(MongoWrapper::autoCursor &result, const std::
 }
 
 MongoCode MongoWrapper::insertOne(const std::string &ns, const std::string &data) {
-    MongoCode error = ping();
+    MongoCode error= ping();
     if (error != MongoCode::E_SUCCESS) return error;
     try
     {
@@ -189,13 +218,12 @@ MongoCode MongoWrapper::insertOne(const std::string &ns, const std::string &data
     catch (bsoncxx::exception &ex)
     {
         error = E_DB_EXCEPTION;
-        //LOG_ERROR("\n\tdb.%s.insertOne(%s)\n\tException Occur errcode:%d errmsg:%s", ns.empty() ? "null" : ns.c_str(), data.empty() ? "null" : data.c_str(), ex.code().value(), ex.what());
+        std::cout<<"ex_bson"<<std::endl;
     }
     catch (mongocxx::v_noabi::exception &ex)
     {
         error = E_DB_EXCEPTION;
-        auto errMsg = ex.what();
-        //LOG_ERROR("\n\tdb.%s.insertOne(%s)\n\tException Occur errcode:%d errmsg:%s", ns.empty() ? "null" : ns.c_str(), data.empty() ? "null" : data.c_str(), ex.code().value(), ex.what());
+        std::cout<<"ex_mongo"<<std::endl;
     }
     return error;
 }
@@ -219,12 +247,10 @@ MongoCode MongoWrapper::insertMany(const std::string &ns, const std::string &dat
     catch (bsoncxx::exception &ex)
     {
         error = E_DB_EXCEPTION;
-        //LOG_ERROR("\n\tdb.%s.insert(%s)\n\tException Occur errcode:%d errmsg:%s", ns.empty() ? "null" : ns.c_str(), data.empty() ? "null" : data.c_str(), ex.code().value(), ex.what());
     }
     catch (mongocxx::v_noabi::exception &ex)
     {
         error = E_DB_EXCEPTION;
-        //LOG_ERROR("\n\tdb.%s.insert(%s)\n\tException Occur errcode:%d errmsg:%s", ns.empty() ? "null" : ns.c_str(), data.empty() ? "null" : data.c_str(), ex.code().value(), ex.what());
     }
     return error;
 }
@@ -243,12 +269,10 @@ MongoWrapper::updateOne(const std::string &ns, const std::string &query, const s
     catch (bsoncxx::exception &ex)
     {
         error = E_DB_EXCEPTION;
-        //LOG_ERROR("\n\tdb.%s.updateOne(%s,%s,{upsert:%d})\n\tException Occur errcode:%d errmsg:%s", ns.empty() ? "null" : ns.c_str(), query.empty() ? "null" : query.c_str(), data.empty() ? "null" : data.c_str(), upsert, ex.code().value(), ex.what());
     }
     catch (mongocxx::v_noabi::exception &ex)
     {
         error = E_DB_EXCEPTION;
-        //LOG_ERROR("\n\tdb.%s.updateOne(%s,%s,{upsert:%d})\n\tException Occur errcode:%d errmsg:%s", ns.empty() ? "null" : ns.c_str(), query.empty() ? "null" : query.c_str(), data.empty() ? "null" : data.c_str(), upsert, ex.code().value(), ex.what());
     }
     return error;
 }
@@ -359,15 +383,17 @@ MongoCode MongoWrapper::ping() {
     }
     catch (bsoncxx::exception &ex)
     {
+        std::cout<<"MMongoDB ping err code:"<< ex.code().value()<< "errormsg"<<ex.what()<<std::endl;
         error = E_DB_EXCEPTION;
-        //LOG_ERROR("MongoDB ping errcode:%d errormsg:%s", ex.code().value(), ex.what());
     }
     catch (mongocxx::v_noabi::exception &ex)
     {
+        std::cout<<"MMongoDB ping err code:"<< ex.code().value()<< "errormsg"<<ex.what()<<std::endl;
         error = E_DB_EXCEPTION;
-        //LOG_ERROR("MongoDB ping err code:%d errormsg:%s", ex.code().value(), ex.what());
     }
     return error;
 }
+
+
 
 

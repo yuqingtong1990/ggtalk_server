@@ -29,5 +29,31 @@ private:
 	std::string dbname_;
 };
 
+struct cfgMongo{
+	std::string host_ = "localhost:27017";
+	std::string dbname_;
+	std::string replset_;
+	std::string user_;
+	std::string passwd_;
+};
 
+class mongoDbCofig
+	:public Singleton<mongoDbCofig>
+{
+public:
+	mongoDbCofig();
+    ~mongoDbCofig() = default;
+
+	bool LoadCfgFromFile();
+
+	cfgMongo& getOfflineMsg();
+	cfgMongo& getChatRecord();
+	cfgMongo& getGroupRecord();
+private:
+	//离线消息数据库
+	cfgMongo cfg_offline_msg;
+	//聊天记录数据库
+	cfgMongo cfg_user_record;
+	cfgMongo cfg_group_record;
+};
 #endif //ALL_DBSRVCONFIGMGR_H

@@ -3,6 +3,8 @@
 //
 
 #include "db_server.h"
+#include "MongoAsynMgr.h"
+
 using namespace evpp;
 
 DBServer::DBServer() {
@@ -74,4 +76,26 @@ void DBServer::OnClose(const evpp::TCPConnPtr &conn) {
     if (iter != mapIdConn_.end()){
         mapIdConn_.erase(iter++);
     }
+}
+
+bool DBServer::Init(std::string &strErrMsg) {
+    return false;
+}
+
+void DBServer::End() {
+    MongoWrapper::shutdown();
+}
+
+bool DBServer::InitRedis() {
+    return false;
+}
+
+bool DBServer::InitMongoDbMgr() {
+
+
+    return false;
+}
+
+bool DBServer::InitMysqlDbMgr() {
+    return false;
 }

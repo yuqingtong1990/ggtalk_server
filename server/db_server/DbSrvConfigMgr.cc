@@ -31,3 +31,25 @@ std::string &mysqlDbConfig::password() {
 std::string &mysqlDbConfig::dbname() {
     return dbname_;
 }
+
+bool mongoDbCofig::LoadCfgFromFile() {
+    return true;
+}
+
+cfgMongo &mongoDbCofig::getChatRecord() {
+    return cfg_user_record;
+}
+
+cfgMongo &mongoDbCofig::getOfflineMsg() {
+    return cfg_offline_msg;
+}
+
+mongoDbCofig::mongoDbCofig() {
+    cfg_offline_msg.dbname_ = "offline_msg";
+	cfg_user_record.dbname_ = "user_record";
+	cfg_group_record.dbname_ = "group_record";
+}
+
+cfgMongo &mongoDbCofig::getGroupRecord() {
+    return cfg_group_record;
+}

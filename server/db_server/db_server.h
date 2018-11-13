@@ -23,12 +23,18 @@ class DBServer {
 public:
     DBServer();
     ~DBServer();
-
+    bool Init(std::string& strErrMsg);
+    void End();
     void OnConnection(const evpp::TCPConnPtr& conn);
     void OnChatMessage(const evpp::TCPConnPtr& conn,evpp::Buffer* msg);
     bool Start(evpp::EventLoop* loop,const char* ip = "0.0.0.0", short port =8100);
     void Loop();
     void OnClose(const evpp::TCPConnPtr& conn);
+
+private:
+    bool InitRedis();
+    bool InitMongoDbMgr();
+    bool InitMysqlDbMgr();
 private:
     std::mutex mutex_conn_;
     std::map<uint64_t,evpp::TCPConnPtr> mapIdConn_;

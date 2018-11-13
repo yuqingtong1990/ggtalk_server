@@ -13,14 +13,6 @@ public:
 
     virtual ~Singleton(){}
 
-    inline static type & getSingleton()
-    {
-        if (!_singleton)
-        {
-            _singleton = new type();
-        }
-        return *_singleton;
-    }
     inline static type * getSingletonPtr()
     {
         if (!_singleton)
@@ -35,6 +27,7 @@ public:
 template < class type >
 type* Singleton<type>::_singleton = nullptr;
 
+
 template < class type, class param >
 class SingletonFirst
 {
@@ -42,14 +35,6 @@ public:
     SingletonFirst(){}
     ~SingletonFirst(){}
 
-    inline static type & getSingleton()
-    {
-        if (!_singleton)
-        {
-            _singleton = new type(new param());
-        }
-        return *_singleton;
-    }
     inline static type * getSingletonPtr()
     {
         if (!_singleton)
