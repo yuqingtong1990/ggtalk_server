@@ -107,7 +107,7 @@ MongoOperID MongoAsynOper::drop(const std::string &table) {
 void MongoAsynOper::onTimer() {
     if (_handle)
     {
-        _handle(_resultArr);
+        _handle(_resultArr,pParam_);
     }
 }
 
@@ -233,6 +233,10 @@ int MongoAsynOper::onHandleDrop(MongoWrapperPtr conn, MongoDataOperPtr dataPtr) 
     MongoResult_TPtr result(new MongoResult(dataPtr->id, error));
     _resultArr.insert(ResultPair(result->id, result));
     return error;
+}
+
+void MongoAsynOper::SetParam(void *pParam) {
+    pParam_ = pParam;
 }
 
 

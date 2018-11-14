@@ -6,7 +6,12 @@ option optimize_for = LITE_RUNTIME;
 //客户端发送消息
 message IMSendMessageReq
 {
-	IM.BaseDefine.IMMsgData msgdata = 1;
+	std::string strMsg;//(json)
+
+	//以下属性可以从json中解析出来，由消息服务器赋值
+	uint64  uuid;
+	uint32 receiverId;
+	bool bGroup;
 }
 
 message IMSendMessageRsp
@@ -16,29 +21,27 @@ message IMSendMessageRsp
 	uint64 uuid    = 3;
 }
 
-//服务端通知有新的消息
-message IMHaveNewMessage
-{
-	uint32 unreadcut = 1; //未读消息计数
-	sint64 srvtm    = 2;  //当前服务端时间搓 
-}
-
-//服务端通知
+//服务端
 message IMSrvPushMessage
 {
-	IM.BaseDefine.IMMsgData msgdata = 1;
+	std::string strMsg;//(json)
+
+	//以下属性可以从json中解析出来，由消息服务器赋值
+	uint64  uuid;
+	uint32 receiverId;
+	bool bGroup;
 }
 
 
 //主动去服务器去拉取消息
 message IMMsgGetMessageReq
 {
-	sint64 srvtm    = 1;  //当前服务端时间搓 
+	sint64 tm_last    = 1;  //上次拉取消息的时间，由redis缓存，并在mysql里存放
 }
 
 message IMMsgGetMessageRsp
 {
 	bool HaveMsg = 1;
-	repeated IM.BaseDefine.IMMsgData msgdatas = 2;
+	repeated string msgjsonarray = 2;
 }
 

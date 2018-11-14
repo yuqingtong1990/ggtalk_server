@@ -52,11 +52,11 @@ public:
     void SetMsgHaveRead(uint32_t userId,uint32_t peerId);
 
     //回调函数
-    void InsertUserMessage_callback(const ResultMap& ret);
-    void InsertGroupMessage_callback(const ResultMap& ret);
-    void InsertOfflineMsg_callback(const ResultMap& ret);
-    void GetUserOffLineMsg_callback(const ResultMap& ret);
-    void SetMsgHaveRead_callback(const ResultMap& ret);
+    void InsertUserMessage_callback(const ResultMap& ret,void* param);
+    void InsertGroupMessage_callback(const ResultMap& ret,void* param);
+    void InsertOfflineMsg_callback(const ResultMap& ret,void* param);
+    void GetUserOffLineMsg_callback(const ResultMap& ret,void* param);
+    void SetMsgHaveRead_callback(const ResultMap& ret,void* param);
 };
 
 

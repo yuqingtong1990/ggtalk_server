@@ -63,7 +63,7 @@ using MongoDataOperArray = std::vector<MongoDataOperPtr>;
 using MongoResult_TPtr = std::shared_ptr<MongoResult>;
 using ResultMap = std::unordered_map<MongoOperID, MongoResult_TPtr>;
 using ResultPair = std::pair<MongoOperID, MongoResult_TPtr>;
-using MongoOperHandle = std::function<void(const ResultMap&)>;
+using MongoOperHandle = std::function<void(const ResultMap&,void*)>;
 
 
 class MongoAsynOper
@@ -94,7 +94,7 @@ public:
 
     MongoOperID drop(const std::string &table);
 
-
+    void SetParam(void* pParam);
     void onTimer();
     void onHandle(MongoWrapperPtr conn);
 private:
@@ -113,6 +113,7 @@ private:
     MongoDataOperArray _operArray;
     ResultMap _resultArr;
     MongoOperHandle _handle;
+    void* pParam_ = nullptr;
     int _result;
 };
 
