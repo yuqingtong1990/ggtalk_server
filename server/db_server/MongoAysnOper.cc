@@ -2,6 +2,7 @@
 // Created by yqt on 18-11-8.
 //
 
+#include <iostream>
 #include "MongoAysnOper.h"
 
 MongoAsynOper::MongoAsynOper(MongoOperHandle handle)
@@ -107,7 +108,7 @@ MongoOperID MongoAsynOper::drop(const std::string &table) {
 void MongoAsynOper::onTimer() {
     if (_handle)
     {
-        _handle(_resultArr,pParam_);
+        _handle(_resultArr,uid_);
     }
 }
 
@@ -172,6 +173,7 @@ int MongoAsynOper::onHandleSelectMany(MongoWrapperPtr conn, MongoDataOperPtr dat
     {
         for (auto&& doc : *cursor.get())
         {
+
             result->bsonArr.push_back(doc);
         }
     }
@@ -235,8 +237,7 @@ int MongoAsynOper::onHandleDrop(MongoWrapperPtr conn, MongoDataOperPtr dataPtr) 
     return error;
 }
 
-void MongoAsynOper::SetParam(void *pParam) {
-    pParam_ = pParam;
+void MongoAsynOper::SetUid(uint32_t uid) {
+    uid_ = uid;
 }
-
 

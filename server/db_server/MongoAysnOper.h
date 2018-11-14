@@ -52,7 +52,6 @@ struct MongoResult
     MongoResult(MongoOperID mongoId, int err, uint64_t c = 0) :
         id(mongoId), code(err), count(c)
     {}
-
     MongoOperID id;
     int code;        //update,insert,delete
     uint64_t count;    //count
@@ -63,7 +62,7 @@ using MongoDataOperArray = std::vector<MongoDataOperPtr>;
 using MongoResult_TPtr = std::shared_ptr<MongoResult>;
 using ResultMap = std::unordered_map<MongoOperID, MongoResult_TPtr>;
 using ResultPair = std::pair<MongoOperID, MongoResult_TPtr>;
-using MongoOperHandle = std::function<void(const ResultMap&,void*)>;
+using MongoOperHandle = std::function<void(const ResultMap&,uint32_t)>;
 
 
 class MongoAsynOper
@@ -94,7 +93,7 @@ public:
 
     MongoOperID drop(const std::string &table);
 
-    void SetParam(void* pParam);
+    void SetUid(uint32_t uid);
     void onTimer();
     void onHandle(MongoWrapperPtr conn);
 private:
@@ -113,7 +112,7 @@ private:
     MongoDataOperArray _operArray;
     ResultMap _resultArr;
     MongoOperHandle _handle;
-    void* pParam_ = nullptr;
+    uint32_t uid_; //操作人的id
     int _result;
 };
 

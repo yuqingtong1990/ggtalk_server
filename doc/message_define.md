@@ -68,7 +68,62 @@ data content消息的内容,refer这条消息提及的用户id
     	'md5':"e10adc3949ba59abbe56e057f20f883e",
     	'sfix':".png",
     	'size':1113232,
+    	'width':640,
+    	'height':360,
     },
 }
+```
+
+3.***音频消息***
+
+```json
+{
+    data：{
+        'url':"http://xxx.xx/",
+    	'md5':"e10adc3949ba59abbe56e057f20f883e",
+    	'sfix':".mp3",
+    	'size':1113232,
+    	'dura':50,//音频持续时间
+    },
+}
+```
+
+4.***视频消息***
+
+```json
+{
+    data：{
+        'url':"http://xxx.xx/",
+    	//'cover':"http://xxx.xx/",//视频的封面，这个可能占时没有
+    	'md5':"e10adc3949ba59abbe56e057f20f883e",
+    	'sfix':".mp4",
+    	'size':1113232,
+    	'dura':50,//视频持续时间
+    },
+}
+```
+
+5.***文件消息***
+
+```json
+{
+    data：{
+        'url':"http://xxx.xx/",
+    	'md5':"e10adc3949ba59abbe56e057f20f883e",
+    	'sfix':".zip",
+    	'size':1113232,
+    },
+}
+```
+
+6.表情消息
+
+```json
+data：{
+        'url':"http://xxx.xx/", //表情的下载链接
+    	'md5':"e10adc3949ba59abbe56e057f20f883e",
+    	'album':'sfsssws', //表情的专辑id
+    	'index':1,
+    },
 ```
 

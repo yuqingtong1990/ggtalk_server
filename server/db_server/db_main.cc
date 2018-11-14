@@ -2,29 +2,31 @@
 // Created by yqt on 18-11-6.
 //
 #include <iostream>
-#include <memory>
-#include "MongoAsynMgr.h"
+#include <zconf.h>
+#include "MessageDBControl.h"
 #include "json/json.h"
 
 int main(int agrc,char* agrcs[]){
-    MongoWrapper::initMongodb();
-    auto conn2 = std::shared_ptr<MongoWrapper>(new MongoWrapper);
-    conn2->initConnection("localhost:27017", "chat_record");
 
-    Json::Value value;
-    value["name"] = "yqt";
-    value["age"] = 10;
-    auto error = conn2->insertOne("offline_msg", value.toStyledString());
-    if (E_SUCCESS == error)
-    {
-        std::cout<<"true"<<std::endl;
+    MessageDBControl::getSingletonPtr()->Init();
+
+    Json::Value msg;
+    msg["sendid"] = 11111;
+    msg["recvid"] = 22222;
+    msg["type"] = 1;
+    msg["session"] = 1;
+    msg["ver"] = 1;
+    msg["uuid"] = 1111111111111111;
+    msg["time"] = time(nullptr);
+    Json::Value data;
+    data["content"] = "空山星雨后";
+    msg["data"] = data;
+
+    MessageDBControl::getSingletonPtr()->GetUserOffLineMsg(1111111,false);
+    while (true) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        MongoAsynMgr::getSingletonPtr()->onTimer();
     }
-    else
-    {
-        std::cout<<error<<std::endl;
-    }
-    MongoWrapper::shutdown();
-    getchar();
     return 0;
 }
 

@@ -27,6 +27,7 @@ enum DBOpertionCode
 
 enum ReadMode
 {
+    k_none = -1,
     k_primary = 0,
     k_primary_preferred,
     k_secondary,

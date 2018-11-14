@@ -6,9 +6,12 @@
 #define ALL_MESSAGEDBCONTROL_H
 
 #include <string>
+#include "Singleton.h"
 #include "MongoAsynMgr.h"
 
-class MessageDBControl {
+class MessageDBControl
+    :public Singleton<MessageDBControl>
+{
 public:
     MessageDBControl() = default;
     ~MessageDBControl() = default;
@@ -52,11 +55,11 @@ public:
     void SetMsgHaveRead(uint32_t userId,uint32_t peerId);
 
     //回调函数
-    void InsertUserMessage_callback(const ResultMap& ret,void* param);
-    void InsertGroupMessage_callback(const ResultMap& ret,void* param);
-    void InsertOfflineMsg_callback(const ResultMap& ret,void* param);
-    void GetUserOffLineMsg_callback(const ResultMap& ret,void* param);
-    void SetMsgHaveRead_callback(const ResultMap& ret,void* param);
+    void InsertUserMessage_callback(const ResultMap& ret,uint32_t uid);
+    void InsertGroupMessage_callback(const ResultMap& ret,uint32_t uid);
+    void InsertOfflineMsg_callback(const ResultMap& ret,uint32_t uid);
+    void GetUserOffLineMsg_callback(const ResultMap& ret,uint32_t uid);
+    void SetMsgHaveRead_callback(const ResultMap& ret,uint32_t uid);
 };
 
 

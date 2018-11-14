@@ -5,7 +5,7 @@ option optimize_for = LITE_RUNTIME;
 //客户端发送消息
 message IMSendMessageReq
 {
-	string strMsg = 1;//(json)
+	string strMsgJson = 1;//(json)
 
 	//以下属性可以从json中解析出来，由消息服务器赋值
 	uint64  uuid = 2;
@@ -40,7 +40,7 @@ message IMMsgGetMessageReq
 
 message IMMsgGetMessageRsp
 {
-	bool HaveMsg = 1;
+	uint32 userId = 1;
 	repeated string msgjsonarray = 2;
 }
 
