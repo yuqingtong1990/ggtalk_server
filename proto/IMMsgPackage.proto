@@ -1,17 +1,16 @@
 syntax = "proto3";
 package IM.MessagePackage;
-import "IMBaseDefine.proto";
 option optimize_for = LITE_RUNTIME;
 
 //客户端发送消息
 message IMSendMessageReq
 {
-	std::string strMsg;//(json)
+	string strMsg = 1;//(json)
 
 	//以下属性可以从json中解析出来，由消息服务器赋值
-	uint64  uuid;
-	uint32 receiverId;
-	bool bGroup;
+	uint64  uuid = 2;
+	uint32 receiverId = 3;
+	bool bGroup = 4;
 }
 
 message IMSendMessageRsp
@@ -24,12 +23,12 @@ message IMSendMessageRsp
 //服务端
 message IMSrvPushMessage
 {
-	std::string strMsg;//(json)
+	string strMsg = 1;//(json)
 
 	//以下属性可以从json中解析出来，由消息服务器赋值
-	uint64  uuid;
-	uint32 receiverId;
-	bool bGroup;
+	uint64  uuid = 2;
+	uint32 receiverId =3;
+	bool bGroup = 4;
 }
 
 
