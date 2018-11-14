@@ -2,10 +2,9 @@
 // Created by yqt on 18-11-12.
 //
 #include <json/value.h>
-#include "DbSrvConfigMgr.h"
+#include "dbWrapper/DbSrvConfigMgr.h"
 #include "MessageDBControl.h"
 #include "evpp/logging.h"
-#include "DbSrvConfigMgr.h"
 
 bool MessageDBControl::Init() {
     MongoWrapper::initMongodb();

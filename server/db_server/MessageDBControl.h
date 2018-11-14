@@ -7,7 +7,7 @@
 
 #include <string>
 #include "Singleton.h"
-#include "MongoAsynMgr.h"
+#include "dbWrapper/MongoAsynMgr.h"
 
 class MessageDBControl
     :public Singleton<MessageDBControl>
