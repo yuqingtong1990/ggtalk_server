@@ -1,0 +1,8 @@
+cmake_minimum_required (VERSION 3.4)
+project(msg_server)
+set(CMAKE_CXX_STANDARD 11)
+set( CMAKE_BUILD_TYPE Debug )
+#set( CMAKE_BUILD_TYPE Release)
+file(GLOB MSGSRV_SRCS *.cpp */*.cpp *.h */*.h  *.cc */*.cc ../proto/*.cc  ../proto/*.h)
+link_libraries(base_static evpp_static jsoncpp hiredis protobuf)
+add_executable(msg_server ${MSGSRV_SRCS})
