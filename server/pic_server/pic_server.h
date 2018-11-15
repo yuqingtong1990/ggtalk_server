@@ -20,7 +20,13 @@ public:
                     const evpp::http::ContextPtr& ctx,\
                     const evpp::http::HTTPSendResponseCallback& cb);
 
-    void ProxyHandler(evpp::EventLoop* loop,\
+    //获取默认头像
+    void getDefailtAvaterHandler(evpp::EventLoop* loop,\
+                  const evpp::http::ContextPtr& ctx,\
+                  const evpp::http::HTTPSendResponseCallback& cb);
+
+    //上传头像
+    void UploadAvaterHandler(evpp::EventLoop* loop,\
                   const evpp::http::ContextPtr& ctx,\
                   const evpp::http::HTTPSendResponseCallback& cb);
 private:
