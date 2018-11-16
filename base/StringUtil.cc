@@ -475,8 +475,370 @@ std::string Int2Str(long i) {
 }
 
 std::wstring Int2StrW(long i) {
-    return std::__cxx11::wstring();
+    wchar_t ret[20] = { 0 };
+	wprintf(ret, L"%ld", i);
+	return ret;
 }
 
+std::string UrlDecode(const char *s) {
+	if (!s)
+        return "";
+    size_t sLen = strlen(s);
+    if (sLen == 0) {
+        return "";
+    }
+    char *ret = (char*)malloc(sLen);
+    size_t j = 0;
+    for (size_t i=0; i<sLen;) {
+        if ('+' == s[i]) {
+            ret[j] = ' ';
+            i++;
+        } else if ('%' != s[i]) {
+            ret[j] = s[i];
+            i++;
+        } else {
+            char *buf = (char*)s + i + 1;
+            ret[j] = HexToChar((unsigned char*)buf);
+            i += 3;
+        }
+        j++;
+    }
+    string sret(ret,j);
+    free(ret);
+    return sret;
+}
 
+std::string UrlEncode(const char *s) {
+	if (!s) {
+        return "";
+    }
+    size_t sLen = strlen(s);
+    if (0==sLen)
+        return "";
 
+    unsigned char *ret = (unsigned char*)malloc(sLen*3);
+    size_t j = 0;
+    for(size_t i=0; i<sLen; i++) {
+        if ((s[i] >= '0' && s[i] <= '9') || (s[i] >= 'A' && s[i] <= 'z')) {
+            ret[j] = s[i];
+            j+=1;
+        } else {
+            ret[j] = '%';
+            unsigned char *buf = ret + j + 1;
+            CharToHex((unsigned char)s[i],buf);
+            j+=3;
+        }
+    }
+    return string((char*)ret,j);
+}
+
+void CharToHex(unsigned char c, unsigned char *buf) {
+	if (nullptr == buf)
+        return;
+    unsigned char m[17] = "0123456789ABCDEF";
+    unsigned char L, R;
+    L = c;
+    L >>= 4;
+    R = c;
+    R <<= 4;
+    R >>= 4;
+    buf[0] = m[L];
+    buf[1] = m[R];
+}
+
+unsigned char HexToChar(const unsigned char *hex) {
+	if (!hex)
+        return 0;
+    const unsigned char tbl[256] =
+    { 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+            255, 255, 255, 255, 255, 255, 255, 10, 11, 12, 13, 14, 15, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 10, 11, 12,
+            13, 14, 15, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 };
+    unsigned char ret = 0;
+    unsigned char L, R;
+    L = tbl[(unsigned long) hex[0]];
+    L <<= 4;
+    R = tbl[(unsigned long) hex[1]];
+    ret = L | R;
+    return ret;
+}
+
+std::string BufToHex(unsigned char *buf, unsigned long bufsize) {
+	if (NULL == buf || bufsize == 0)
+		return "";
+	char *ret = (char*) malloc(bufsize * 2);
+	if (!ret)
+		return "";
+	char m[17] = "0123456789ABCDEF";
+	unsigned char L, R;
+	int j = 0;
+	for (unsigned long i = 0; i != bufsize; ++i)
+	{
+		L = (unsigned char) buf[i];
+		L >>= 4;
+		R = (unsigned char) buf[i];
+		R <<= 4;
+		R >>= 4;
+		ret[j] = m[L];
+		ret[j + 1] = m[R];
+		j += 2;
+	}
+	string sret;
+	sret.assign(ret, bufsize * 2);
+	free(ret);
+	return sret;
+}
+
+void HexToBuf(const std::string &strhex, unsigned char **buf, unsigned long &bufsize) {
+	if (strhex.length() < 2)
+	{
+		*buf = NULL;
+		bufsize = 0;
+		return;
+	}
+	const unsigned char tbl[256] =
+	{ 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+			255, 255, 255, 255, 255, 255, 255, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+			255, 255, 255, 255, 255, 255, 255, 10, 11, 12, 13, 14, 15, 255, 255,
+			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 10, 11, 12,
+			13, 14, 15, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+			255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 };
+	*buf = (unsigned char*) malloc(strhex.length() / 2);
+	unsigned long j = 0;
+	for (unsigned long i = 0; i < strhex.length() - 1; i += 2)
+	{
+		unsigned char L, R;
+		L = tbl[(unsigned long) strhex[i]];
+		L <<= 4;
+		R = tbl[(unsigned long) strhex[i + 1]];
+		(*buf)[j] = (L | R);
+		++j;
+	}
+	bufsize = strhex.length() / 2;
+}
+
+string UpperCase(const string &str)
+{
+	string ret(str);
+	if (ret.empty())
+		return ret;
+	for (size_t i = 0; i < ret.length(); ++i)
+	{
+		ret[i] = toupper((int) ret[i]);
+	}
+	return ret;
+}
+
+string LowerCase(const string &str)
+{
+	string ret(str);
+	if (ret.empty())
+		return ret;
+	for (size_t i = 0; i < ret.length(); ++i)
+	{
+		ret[i] = tolower((int) ret[i]);
+	}
+	return ret;
+}
+
+wstring UpperCaseW(const wstring &str)
+{
+	wstring ret(str);
+	if (ret.empty())
+		return ret;
+	for (size_t i = 0; i < ret.length(); ++i)
+	{
+		ret[i] = toupper((int) ret[i]);
+	}
+	return ret;
+}
+
+wstring LowerCaseW(const wstring &str)
+{
+	wstring ret(str);
+	if (ret.empty())
+		return ret;
+	for (size_t i = 0; i < ret.length(); ++i)
+	{
+		ret[i] = tolower((int) ret[i]);
+	}
+	return ret;
+}
+
+string Fmt(const char* str, ...) {
+    string ret = str;
+    if (str != NULL)
+    {
+        char vret[8192] = { 0 };
+        va_list vl;
+        va_start(vl, str);
+        vsnprintf(vret, 8192, str, vl);
+        va_end(vl);
+        return string(vret, strlen(vret));
+    }
+    return "";
+}
+string FormatString(const char * str, ...)
+{
+	string ret = str;
+	if (str != NULL)
+	{
+		char vret[1024] =
+		{ 0 };
+		va_list vl;
+		va_start(vl, str);
+		vsnprintf(vret, 1024, str, vl);
+		va_end(vl);
+		return string(vret, strlen(vret));
+	}
+	return "";
+}
+
+wstring FormatStringW(const wchar_t *str, ...)
+{
+	if (str != NULL)
+	{
+		wchar_t vret[1024] =
+		{ 0 };
+		va_list vl;
+		va_start(vl, str);
+		vswprintf(vret, 1024, str, vl);
+		va_end(vl);
+		return wstring(vret, wcslen(vret));
+	}
+	return L"";
+}
+
+string FormatStringEx(size_t buf_size, const char* str, ...)
+{
+	if (str != NULL)
+	{
+		char *vret = (char*) malloc(buf_size);
+		memset(vret, 0, buf_size);
+		va_list vl;
+		va_start(vl, str);
+		vsnprintf(vret, buf_size, str, vl);
+		va_end(vl);
+		string ret(vret, strlen(vret));
+		::free(vret);
+		return ret;
+	}
+	return "";
+}
+
+wstring FormatStringWEx(size_t buf_size, const wchar_t* str, ...)
+{
+	if (str != NULL)
+	{
+		wchar_t *vret = (wchar_t*) malloc(buf_size * sizeof(wchar_t));
+		memset(vret, 0, buf_size * sizeof(wchar_t));
+		va_list vl;
+		va_start(vl, str);
+		vswprintf(vret, buf_size, str, vl);
+		va_end(vl);
+		wstring ret(vret, wcslen(vret));
+		::free(vret);
+		return ret;
+	}
+	return L"";
+}
+
+std::string ExtractFilePath(const std::string &filestr, bool IncludeBackslash) {
+    if (filestr.empty())
+		return "";
+	for (unsigned long i = filestr.length() - 1; i >= 0; --i)
+	{
+		if (filestr[i] == '/')
+		{
+			if (IncludeBackslash)
+				return filestr.substr(0, i + 1);
+
+            return filestr.substr(0, i);
+		}
+	}
+	return "";
+}
+
+string ExtractFileName(const string &filestr)
+{
+	if (filestr.empty())
+		return "";
+	for (unsigned long i = filestr.length() - 1; i >= 0; --i)
+	{
+		if (filestr[i] == '/')
+		{
+			return filestr.substr(i + 1);
+		}
+	}
+	return "";
+}
+
+string IncludeTrailingPathDelimiter(const string &path)
+{
+	string s = trim(path);
+	if (s.empty())
+		return s;
+	if (s[s.length() - 1] != '/')
+		return s + "/";
+	else
+		return s;
+}
+
+string ExcludeTrailingPathDelimiter(const string &path)
+{
+	string s = trim(path);
+	if (s.empty())
+		return s;
+	if (s[s.length() - 1] == '/')
+		return s.substr(0, s.length() - 1);
+	else
+		return s;
+}
+
+std::string ExtractExtensions(const std::string &filestr, bool IncludePoint) {
+    if (filestr.empty())
+		return "";
+	for(unsigned long i = filestr.length()-1; i>=0; --i)
+	{
+		if (filestr[i] == L'.')
+		{
+			if (IncludePoint)
+			{
+				return filestr.substr(i);
+			}
+			else
+			{
+				return filestr.substr(i+1);
+			}
+		}
+	}
+	return "";
+}

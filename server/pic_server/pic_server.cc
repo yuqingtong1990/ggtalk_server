@@ -4,11 +4,13 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <base/StringUtil.h>
 #include "json/json.h"
 #include "pic_server.h"
 #include "evpp/httpc/request.h"
 #include "evpp/httpc/response.h"
 #include "evpp/httpc/url_parser.h"
+#include "httpformdata.h"
 
 using namespace std;
 
@@ -59,36 +61,28 @@ void PicServer::getDefailtAvaterHandler(evpp::EventLoop *loop, const evpp::http:
 
 void PicServer::UploadAvaterHandler(evpp::EventLoop *loop, const evpp::http::ContextPtr &ctx,
                                     const evpp::http::HTTPSendResponseCallback &cb) {
-    LOG_INFO<<ctx->remote_ip()<<endl;
+   LOG_INFO<<ctx->remote_ip()<<endl;
     LOG_INFO<<ctx->body().size()<<endl;
     std::string strContentType = ctx->FindRequestHeader("Content-Type");
     //LOG_INFO<<strContentType<<endl;
     size_t npos = strContentType.find("boundary=",0);
-    std::string strkey = strContentType.substr(npos+9);
-    LOG_INFO<<strkey<<endl;
+    std::string strboundary = strContentType.substr(npos+9);
+    LOG_INFO<<strboundary<<endl;
 
-    std::string strStart =  "--"+ strkey+;
-    std::string strEnd = "--"+strkey+"--";
+    MultipartParser parser(strboundary.c_str());
+    parser.ParseBody(ctx->body().ToString());
+    //parser.Print();
+    for (auto iter : parser.getform()) {
 
-    LOG_INFO<< strStart << endl;
-    LOG_INFO<< strEnd << endl;
-    std::string body = ctx->body().ToString();
-    //LOG_INFO<< body << endl;
-    size_t nstart = body.find(strStart)+strStart.size();
-    size_t nEnd = body.find(strEnd,nstart);
-    LOG_INFO<<"start: "<<nstart <<" "<<"end: "<<nEnd<<endl;
+        std::string strName = MultipartParser::QneryFindFromDisposition(iter.first,"name");
+        std::string strfileName = MultipartParser::QneryFindFromDisposition(iter.first,"filename");
 
-    string strImg = body.substr(nstart,nEnd-strStart.size());
-
-    nstart = strImg.find("\r\n\r\n")+4;
-    nEnd = strImg.find("\r\n\r\n",nstart);
-
-    strImg = strImg.substr(nstart,nEnd);
-    LOG_INFO<<strImg<<endl;
-
-    fstream f("/tmp/1.jpeg", ios::out);
-    f << strImg;//写入数据
-    f.close();
+        std::string path  = "/tmp/"+strName+ExtractExtensions(strfileName);
+        std::cout<<path<<endl;
+        fstream f(path, ios::out);
+        f << iter.second;//写入数据
+        f.close();
+    }
 
     Json::Value root;
     root["success"] = true;

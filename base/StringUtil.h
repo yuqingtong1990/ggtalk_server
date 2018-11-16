@@ -46,7 +46,37 @@ std::wstring StringList2StringW(const std::list<std::wstring> &AStringList, cons
 std::string ConcatString(std::vector<std::string> vecStr);
 std::wstring ConcatStringW(std::vector<std::wstring> vecStr);
 
+std::string UpperCase(const std::string &str);
+std::wstring UpperCaseW(const std::wstring &str);
+std::string LowerCase(const std::string &str);
+std::wstring LowerCaseW(const std::wstring &str);
+
 std::string bin2hex(const std::string &in, int size = 0);
 std::string hex2bin(const std::string &in);
+
+void CharToHex(unsigned char c, unsigned char* buf);
+unsigned char HexToChar(const unsigned char* hex);
+//buffer转16进制
+std::string BufToHex(unsigned char *buf, unsigned long bufsize);
+//16进制转buffer
+void HexToBuf(const std::string &strhex,
+/*out*/unsigned char **buf,
+/*out*/unsigned long &bufsize);
+
+std::string UrlDecode(const char* s);
+std::string UrlEncode(const char *s);
+
+std::string FormatString(const char* str, ...);
+std::string Fmt(const char* str, ...);
+std::wstring FormatStringW(const wchar_t* str, ...);
+std::string FormatStringEx(size_t buf_size, const char* str, ...);
+std::wstring FormatStringWEx(size_t buf_size, const wchar_t* str, ...);
+
+
+std::string ExtractFilePath(const std::string &filestr, bool IncludeBackslash);
+std::string ExtractFileName(const std::string &filestr);
+std::string IncludeTrailingPathDelimiter(const std::string &path);
+std::string ExcludeTrailingPathDelimiter(const std::string &path);
+std::string ExtractExtensions(const std::string &filestr, bool IncludePoint = true);
 
 #endif //ALL_STRINGUTIL_H

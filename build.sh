@@ -8,6 +8,13 @@ check_user() {
 
 check_user
 
+apt install uuid-dev
+
+#centos
+#sudo yum install e2fsprogs-devel
+#sudo yum install uuid-devel
+#sudo yum install libuuid-devel
+
 
 cd /tmp
 #install protobuf 3.6.1
