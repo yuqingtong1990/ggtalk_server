@@ -183,15 +183,15 @@ void MultipartParser::Print() {
 
 std::string MultipartParser::QneryFindFromDisposition(const std::string &content, const std::string &key) {
     static const std::string __s_nullptr;
-    std::cout<<content<<endl;
+    //std::cout<<content<<endl;
     //std::cout<<key<<endl;
     size_t n = content.find(key);
      //std::cout<<n<<endl;
     if (n == std::string::npos){
         return  __s_nullptr;
     }
-    std::cout<<content[n+key.size()+1]<<endl;
-    std::cout<<content[n+key.size()+2]<<endl;
+    //std::cout<<content[n+key.size()+1]<<endl;
+    //std::cout<<content[n+key.size()+2]<<endl;
 
     if(content[n+key.size()] != '=' || content[n+key.size()+1] != '\"'){
         return  __s_nullptr;

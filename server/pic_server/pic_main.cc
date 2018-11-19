@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <base/UniqueId.h>
+#include <base/fileHandle.h>
 #include "pic_server.h"
 #include "base/httpformdata.h"
 using namespace std;
