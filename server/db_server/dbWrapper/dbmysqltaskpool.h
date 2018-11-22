@@ -18,19 +18,21 @@
 #include "Singleton.h"
 #include "databasemysql.h"
 
-typedef std::function<void(CImPdu* pdu)> PDUDataCallback;
+typedef std::function<void(uint64_t id,std::shared_ptr<CImPdu> pdu)> PDUDataCallback;
 
 class ITaskDB
 {
 public:
-    ITaskDB(void) {};
+    ITaskDB() {};
     virtual ~ITaskDB(void) {};
 public:
     virtual void Process(std::shared_ptr<CDatabaseMysql> dbConn) = 0;
     virtual void SetDataCallBack(PDUDataCallback cb);
     virtual void SetId(uint64_t id);
+    virtual void SetImPdu(std::shared_ptr<CImPdu> pdu){ppdu_ = pdu;}
 protected:
     uint64_t id_;
+    std::shared_ptr<CImPdu> ppdu_;
     PDUDataCallback cb_;
 };
 
@@ -58,7 +60,7 @@ class TaskDBThdPool
 {
 public:
     TaskDBThdPool();
-    ~TaskDBThdPool();
+    ~TaskDBThdPool() override;
     bool start();
     void stop();
     void run();

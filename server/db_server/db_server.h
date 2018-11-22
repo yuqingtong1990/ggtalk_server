@@ -10,6 +10,7 @@
 #include <map>
 #include <atomic>
 #include <mutex>
+#include "base/ImPdu.h"
 
 #include "evpp/buffer.h"
 #include "evpp/event_loop.h"
@@ -26,10 +27,11 @@ public:
     bool Init(std::string& strErrMsg);
     void End();
     void OnConnection(const evpp::TCPConnPtr& conn);
-    void OnChatMessage(const evpp::TCPConnPtr& conn,evpp::Buffer* msg);
     bool Start(evpp::EventLoop* loop,const char* ip = "0.0.0.0", short port =8100);
     void Loop();
     void OnClose(const evpp::TCPConnPtr& conn);
+    void OnChatMessage(const evpp::TCPConnPtr& conn,evpp::Buffer* msg);
+    void CallBackPdu(uint64_t id,std::shared_ptr<CImPdu> ppdu);
 
 private:
     bool InitRedis();

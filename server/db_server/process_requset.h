@@ -7,6 +7,7 @@
 
 #include <cstdint>
 #include <string>
+#include "dbWrapper/dbmysqltaskpool.h"
 #include "ImPdu.h"
 #include "base/Singleton.h"
 /*
@@ -21,8 +22,7 @@ public:
     process_requset() = default;
     ~process_requset() = default;
 
-    bool ProcessBuffer(uint64_t id, const std::string& strbuf);
-    bool ProcessPDU(uint64_t id, CImPdu* ppdu);
+    bool ProcessPDU(std::shared_ptr<CImPdu> pdu,std::shared_ptr<ITaskDB> ptr);
 };
 
 

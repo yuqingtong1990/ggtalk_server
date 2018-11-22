@@ -17,8 +17,8 @@ ClientSession::ClientSession(const std::shared_ptr<evpp::TCPConn> &conn)
 
 
 void ClientSession::OnClinetMessage(const evpp::TCPConnPtr &conn, evpp::Buffer *msg) {
-    std::string sMsg = msg->NextAllString();
-	LOG_DEBUG << conn->remote_addr() << ":" << sMsg;
+	std::string sMsg = msg->NextAllString();
+	LOG_DEBUG << "ip: "<< conn->remote_addr() <<"id:" << conn->id() << "data: " << sMsg;
 	ProcessBuffer(conn, sMsg);
 }
 

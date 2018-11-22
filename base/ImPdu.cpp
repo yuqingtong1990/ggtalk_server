@@ -27,8 +27,6 @@ CImPdu* CImPdu::ReadPdu(char *buf, uint32_t len)
 	if (!IsPduAvailable(buf, len, pdu_len))
 		return nullptr;
 
-// 	uint16_t service_id = CByteStream::ReadUint16(buf + 8);
-// 	uint16_t command_id = CByteStream::ReadUint16(buf + 10);
 	CImPdu* pPdu = nullptr;
 
 	pPdu = new CImPdu();
@@ -37,6 +35,7 @@ CImPdu* CImPdu::ReadPdu(char *buf, uint32_t len)
 
 	return pPdu;
 }
+
 
 CImPdu::CImPdu()
 {
@@ -77,6 +76,7 @@ bool CImPdu::ReadPduHeader(char* buf, uint32_t len)
 		is >> header_.service_id;
 		is >> header_.command_id;
 		is >> header_.seq_num;
+		is >> header_.usrid;
 		is >> header_.reversed;
 		ret = true;
 	}
@@ -87,8 +87,12 @@ void CImPdu::SetPBMsg(const google::protobuf::MessageLite* msg)
 {
 	buf_.Read(NULL, buf_.GetWriteOffset());
 	buf_.Write(NULL, sizeof(PduHeader_t));
-	uint32_t msg_size = msg->ByteSize();
-	char* szData = new char[msg_size];
+	uint32_t msg_size = static_cast<uint32_t>(msg->ByteSize());
+	char* szData = new (std::nothrow)char[msg_size];
+	if(nullptr == szData)
+		return;
+	memset(szData,0,msg_size);
+
 	if (!msg->SerializeToArray(szData, msg_size))
 	{
 		//LOG_DEBUG <<"pb msg miss required fields.";
@@ -109,5 +113,8 @@ void CImPdu::WriteHeader()
 	CByteStream::WriteUint16(buf + 8, header_.service_id);
 	CByteStream::WriteUint16(buf + 10, header_.command_id);
 	CByteStream::WriteUint16(buf + 12, header_.seq_num);
+	CByteStream::WriteUint32(buf + 12, header_.usrid);
 	CByteStream::WriteUint32(buf + 14, header_.reversed);
 }
+
+

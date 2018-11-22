@@ -4,6 +4,7 @@
 
 #include "db_server.h"
 #include "dbWrapper/MongoAsynMgr.h"
+#include "process_requset.h"
 
 using namespace evpp;
 
@@ -29,9 +30,40 @@ void DBServer::OnConnection(const evpp::TCPConnPtr &conn) {
     }
 }
 
+std::shared_ptr<CImPdu> generatePdu(char *buf, uint32_t len){
+    uint32_t pdu_len = 0;
+	if (!CImPdu::IsPduAvailable(buf, len, pdu_len))
+		return nullptr;
+    std::shared_ptr<CImPdu> ptr = make_shared<CImPdu>();
+    ptr->Write(buf,len);
+    ptr->ReadPduHeader(buf,sizeof(PduHeader_t));
+    return ptr;
+
+}
+
 void DBServer::OnChatMessage(const evpp::TCPConnPtr &conn, evpp::Buffer *msg) {
     //在这里接收消息服务器过来的消息
-    int64_t id = conn->id();//用于回复
+    std::string sMsg = msg->NextAllString();
+	LOG_DEBUG << "ip: "<< conn->remote_addr() <<"id:" << conn->id() << "data: " << sMsg;
+
+    std::shared_ptr<CImPdu> ppdu = generatePdu((char*)sMsg.c_str(), static_cast<uint32_t>(sMsg.size()));
+    if (ppdu == nullptr){
+
+        LOG_WARN << "msg server send a error pack";
+        return;
+    }
+
+    std::shared_ptr<ITaskDB> ptrTask;
+    if (!process_requset::getSingletonPtr()->ProcessPDU(ppdu,ptrTask)){
+        return;
+    }
+
+    if (ptrTask){
+        ptrTask->SetId(conn->id());
+        ptrTask->SetImPdu(ppdu);
+        ptrTask->SetDataCallBack(std::bind(&DBServer::CallBackPdu,this,std::placeholders::_1, std::placeholders::_2));
+        TaskDBThdPool::getSingletonPtr()->AddReq(ptrTask);
+    }
 
 }
 
@@ -91,11 +123,13 @@ bool DBServer::InitRedis() {
 }
 
 bool DBServer::InitMongoDbMgr() {
-
-
     return false;
 }
 
 bool DBServer::InitMysqlDbMgr() {
     return false;
+}
+
+void DBServer::CallBackPdu(uint64_t id, std::shared_ptr<CImPdu> ppdu) {
+
 }
