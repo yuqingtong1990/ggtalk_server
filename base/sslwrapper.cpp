@@ -161,12 +161,12 @@ namespace SSLWapper
 	{
 		unsigned int len = 20;
 		unsigned char* result = (unsigned char*)malloc(sizeof(char) * len);
-		HMAC_CTX* ctx = HMAC_CTX_new();
-		HMAC_CTX_reset(ctx);
+		HMAC_CTX* ctx = new HMAC_CTX();
+		HMAC_CTX_init(ctx);
 		HMAC_Init_ex(ctx, SecretKey.c_str(), SecretKey.size(), EVP_sha1(), NULL);
 		HMAC_Update(ctx, (unsigned char*)strBuffer.c_str(), strBuffer.size());
 		HMAC_Final(ctx, result, &len);
-		HMAC_CTX_free(ctx);
+		HMAC_CTX_cleanup(ctx);
 		hsha1.assign((char*)result, len);
 		free(result);
 		return true;
@@ -356,7 +356,7 @@ namespace SSLWapper
 			memcpy(block_key, key + 16, 8);
 			DES_set_key_unchecked((const_DES_cblock*)block_key, &ks3);
 
-			//ÃÜÎÄµÄ´óÐ¡±ØÐëÊÇ8µÄ±¶Ê÷
+			//ï¿½ï¿½ï¿½ÄµÄ´ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½8ï¿½Ä±ï¿½ï¿½ï¿½
 			int len = strPlaintext.size();
 			if (len % 8 != 0)
 				break;
@@ -372,7 +372,7 @@ namespace SSLWapper
 
 				DES_ecb3_encrypt((const_DES_cblock *)(src + i), (const_DES_cblock *)(dst + i), &ks1, &ks2, &ks3, DES_DECRYPT);
 			}
-			//PKCS5:»ñÈ¡×îºóÒ»¸ö×Ö½ÚÀ´´¦Àí¶àÓàµÄ×Ö·û
+			//PKCS5:ï¿½ï¿½È¡ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½
 			char ch1 = *(dst + len - 1);
 			strCiphertext.assign(dst, len - ch1);
 		} while (0);
@@ -592,7 +592,7 @@ namespace SSLWapper
 		}
 // 		strmem.insert(0, "-----BEGIN PUBLIC KEY-----\n");
 // 		strmem.append("\n-----END PUBLIC KEY-----\n");
-		//1.0.1g°æ±¾ÐÞ¸Ä
+		//1.0.1gï¿½æ±¾ï¿½Þ¸ï¿½
 		strmem.insert(0, "-----BEGIN RSA PUBLIC KEY-----\n");
 		strmem.append("\n-----END RSA PUBLIC KEY-----\n");
 		BIO *bio = NULL;
@@ -600,9 +600,9 @@ namespace SSLWapper
 		do
 		{
 			char *chPublicKey = const_cast<char *>(strmem.c_str());
-			if ((bio = BIO_new_mem_buf(chPublicKey, -1)) == NULL)       //´Ó×Ö·û´®¶ÁÈ¡RSA¹«Ô¿
+			if ((bio = BIO_new_mem_buf(chPublicKey, -1)) == NULL)       //ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½È¡RSAï¿½ï¿½Ô¿
 				break;
-			rsa = PEM_read_bio_RSAPublicKey(bio, NULL, NULL, NULL);   //´Óbio½á¹¹ÖÐµÃµ½rsa½á¹¹
+			rsa = PEM_read_bio_RSAPublicKey(bio, NULL, NULL, NULL);   //ï¿½ï¿½bioï¿½á¹¹ï¿½ÐµÃµï¿½rsaï¿½á¹¹
 			if (!rsa)
 			{
 				ERR_load_crypto_strings();
@@ -650,9 +650,9 @@ namespace SSLWapper
 		do
 		{
 			char *chPublicKey = const_cast<char *>(strmem.c_str());
-			if ((bio = BIO_new_mem_buf(chPublicKey, -1)) == NULL)       //´Ó×Ö·û´®¶ÁÈ¡RSA¹«Ô¿
+			if ((bio = BIO_new_mem_buf(chPublicKey, -1)) == NULL)       //ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½È¡RSAï¿½ï¿½Ô¿
 				break;
-			rsa = PEM_read_bio_RSAPrivateKey(bio, NULL, NULL, NULL);   //´Óbio½á¹¹ÖÐµÃµ½rsa½á¹¹
+			rsa = PEM_read_bio_RSAPrivateKey(bio, NULL, NULL, NULL);   //ï¿½ï¿½bioï¿½á¹¹ï¿½ÐµÃµï¿½rsaï¿½á¹¹
 			if (!rsa)
 			{
 				ERR_load_crypto_strings();
@@ -691,7 +691,7 @@ namespace SSLWapper
 
 		unsigned int delta = 0x9e3779b9;
 
-		for (int i = 0; i < 8; i++)//8ÂÖÔËËã(ÐèÒª¶ÔÓ¦ÏÂÃæµÄ½âÃÜºËÐÄº¯ÊýµÄÂÖÊýÒ»Ñù)
+		for (int i = 0; i < 8; i++)//8ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Òªï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½Ä½ï¿½ï¿½Üºï¿½ï¿½Äºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½)
 		{
 			sum += delta;
 			y += ((z << 4) + key[0]) ^ (z + sum) ^ ((z >> 5) + key[1]);
@@ -709,9 +709,9 @@ namespace SSLWapper
 		unsigned int  z = *secondChunk;
 		unsigned int  delta = 0x9e3779b9;
 
-		sum = delta << 3; //32ÂÖÔËËã£¬ËùÒÔÊÇ2µÄ5´Î·½£»16ÂÖÔËËã£¬ËùÒÔÊÇ2µÄ4´Î·½£»8ÂÖÔËËã£¬ËùÒÔÊÇ2µÄ3´Î·½
+		sum = delta << 3; //32ï¿½ï¿½ï¿½ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½5ï¿½Î·ï¿½ï¿½ï¿½16ï¿½ï¿½ï¿½ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½4ï¿½Î·ï¿½ï¿½ï¿½8ï¿½ï¿½ï¿½ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½3ï¿½Î·ï¿½
 
-		for (int i = 0; i < 8; i++) //8ÂÖÔËËã
+		for (int i = 0; i < 8; i++) //8ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
 			z -= (y << 4) + key[2] ^ y + sum ^ (y >> 5) + key[3];
 			y -= (z << 4) + key[0] ^ z + sum ^ (z >> 5) + key[1];
@@ -722,7 +722,7 @@ namespace SSLWapper
 		*secondChunk = z;
 	}
 
-	//buffer£ºÊäÈëµÄ´ý¼ÓÃÜÊý¾Ýbuffer£¬ÔÚº¯ÊýÖÐÖ±½Ó¶ÔÔªÊý¾Ýbuffer½øÐÐ¼ÓÃÜ£»size£ºbuffer³¤¶È£»keyÊÇÃÜÔ¿£»
+	//bufferï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½bufferï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½Ó¶ï¿½Ôªï¿½ï¿½ï¿½ï¿½bufferï¿½ï¿½ï¿½Ð¼ï¿½ï¿½Ü£ï¿½sizeï¿½ï¿½bufferï¿½ï¿½ï¿½È£ï¿½keyï¿½ï¿½ï¿½ï¿½Ô¿ï¿½ï¿½
 	void EncryptBuffer(char* buffer, int size, unsigned int* key)
 	{
 		char *p = buffer;
@@ -739,7 +739,7 @@ namespace SSLWapper
 		}
 	}
 
-	//buffer£ºÊäÈëµÄ´ý½âÃÜÊý¾Ýbuffer£¬ÔÚº¯ÊýÖÐÖ±½Ó¶ÔÔªÊý¾Ýbuffer½øÐÐ½âÃÜ£»size£ºbuffer³¤¶È£»keyÊÇÃÜÔ¿£»
+	//bufferï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½bufferï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½Ó¶ï¿½Ôªï¿½ï¿½ï¿½ï¿½bufferï¿½ï¿½ï¿½Ð½ï¿½ï¿½Ü£ï¿½sizeï¿½ï¿½bufferï¿½ï¿½ï¿½È£ï¿½keyï¿½ï¿½ï¿½ï¿½Ô¿ï¿½ï¿½
 	void DecryptBuffer(char* buffer, int size, unsigned int* key)
 	{
 		char *p = buffer;

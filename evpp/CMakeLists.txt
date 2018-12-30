@@ -16,7 +16,7 @@ include_directories(${PROJECT_SOURCE_DIR})
 include_directories(../)
 
 link_libraries(glog)
-link_libraries(event_core event_extra event_openssl)
+link_libraries(event_core event_extra)
 
 add_library(evpp_static STATIC ${evpp_SRCS})
 target_link_libraries(evpp_static ${DEPENDENT_LIBRARIES})
